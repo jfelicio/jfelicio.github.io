@@ -36,11 +36,11 @@ export default function Contact() {
     setSubmitStatus({ type: null, message: '' });
 
     try {
-      // Get Formspree endpoint from environment variable or use default
-      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || 'https://formspree.io/f/YOUR_FORM_ID';
+      // Get Formspree endpoint from environment variable
+      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || '';
       
       // Validate endpoint is configured
-      if (formspreeEndpoint.includes('YOUR_FORM_ID')) {
+      if (!formspreeEndpoint) {
         setSubmitStatus({ 
           type: 'error', 
           message: 'Contact form not configured. Please set NEXT_PUBLIC_FORMSPREE_ENDPOINT environment variable.' 
