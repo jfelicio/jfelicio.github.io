@@ -16,7 +16,7 @@ interface Competency {
 }
 
 const competencies: Competency[] = [
-  { name: "System Optimization", icon: <Settings className="w-5 h-5" /> },
+  { name: "System Optimisation", icon: <Settings className="w-5 h-5" /> },
   { name: "Full-Stack Development", icon: <Code2 className="w-5 h-5" /> },
   { name: "Process Automation", icon: <Zap className="w-5 h-5" /> },
   { name: "Cloud Architecture", icon: <Cloud className="w-5 h-5" /> },

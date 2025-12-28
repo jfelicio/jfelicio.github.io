@@ -19,7 +19,7 @@ const portfolioItems: PortfolioItem[] = [
     category: "Cloud Architecture",
   },
   {
-    title: "Supply Chain Optimization",
+    title: "Supply Chain Optimisation",
     category: "Operations Research",
   },
   {

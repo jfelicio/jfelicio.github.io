@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Montserrat, Lato } from "next/font/google";
 import "./globals.css";
+import { ThemeProvider } from "./components/ThemeProvider";
 
 const montserrat = Montserrat({
   variable: "--font-montserrat",
@@ -16,8 +17,8 @@ const lato = Lato({
 });
 
 export const metadata: Metadata = {
-  title: "João Felício - Industrial Engineer & Software Consultant",
-  description: "Portfolio of João Felício - Bridging the gap between Industrial Engineering and Software Development",
+  title: "João Felício - Industrial Engineer & Supply Chain Consultant",
+  description: "Portfolio of João Felício - Strategic Supply Chain Consultant with expertise in Logistics Transformation and WMS",
 };
 
 export default function RootLayout({
@@ -26,11 +27,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning className="dark">
       <body
         className={`${montserrat.variable} ${lato.variable} antialiased`}
       >
-        {children}
+        <ThemeProvider>{children}</ThemeProvider>
       </body>
     </html>
   );
