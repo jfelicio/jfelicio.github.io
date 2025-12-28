@@ -36,18 +36,8 @@ export default function Contact() {
     setSubmitStatus({ type: null, message: '' });
 
     try {
-      // Get Formspree endpoint from environment variable
-      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || '';
-      
-      // Validate endpoint is configured
-      if (!formspreeEndpoint) {
-        setSubmitStatus({ 
-          type: 'error', 
-          message: 'Contact form not configured. Please set NEXT_PUBLIC_FORMSPREE_ENDPOINT environment variable.' 
-        });
-        setIsSubmitting(false);
-        return;
-      }
+      // Formspree endpoint
+      const formspreeEndpoint = 'https://formspree.io/f/xpqzjepd';
 
       // Prepare form data
       const payload = {
