@@ -9,11 +9,13 @@
     "lint": "eslint"
   },
   "dependencies": {
-    "framer-motion": "latest",
-    "lucide-react": "latest",
+    "autoprefixer": "^10.4.23",
+    "framer-motion": "^12.23.26",
+    "lucide-react": "^0.562.0",
     "next": "latest",
     "react": "rc",
-    "react-dom": "rc"
+    "react-dom": "rc",
+    "resend": "^4.0.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "latest",
@@ -22,8 +24,8 @@
     "@types/react-dom": "^19",
     "eslint": "^9",
     "eslint-config-next": "latest",
-    "postcss": "latest",
-    "tailwindcss": "latest",
+    "postcss": "^8.5.6",
+    "tailwindcss": "^4.1.18",
     "typescript": "^5"
   }
 }

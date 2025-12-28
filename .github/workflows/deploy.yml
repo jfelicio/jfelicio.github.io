@@ -33,6 +33,10 @@ jobs:
 
       - name: Build
         run: npm run build
+        env:
+          RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }}
+          CONTACT_EMAIL: ${{ secrets.CONTACT_EMAIL }}
+          NEXT_PUBLIC_RESEND_API_KEY: ${{ secrets.RESEND_API_KEY }} # If used on client
 
       - name: Setup Pages
         uses: actions/configure-pages@v4

@@ -19,6 +19,9 @@ const lato = Lato({
 export const metadata: Metadata = {
   title: "João Felício - Industrial Engineer & Supply Chain Consultant",
   description: "Portfolio of João Felício - Strategic Supply Chain Consultant with expertise in Logistics Transformation and WMS",
+  icons: {
+    icon: '/favicon.ico',
+  },
 };
 
 export default function RootLayout({
