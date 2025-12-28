@@ -4,7 +4,6 @@ import { motion } from "framer-motion";
 import { useInView } from "framer-motion";
 import { useRef, useState } from "react";
 import { Send, CheckCircle2, AlertCircle } from "lucide-react";
-import { sendEmail } from "../actions/sendEmail";
 
 export default function Contact() {
   const ref = useRef(null);
@@ -27,21 +26,93 @@ export default function Contact() {
     // Prevent duplicate submissions
     if (isSubmitting) return;
 
+    // Honeypot check - if filled, it's likely a bot
+    if (formData.website) {
+      // Silently fail to avoid revealing the honeypot
+      return;
+    }
+
     setIsSubmitting(true);
     setSubmitStatus({ type: null, message: '' });
 
     try {
-      // Create FormData object from form
-      const formDataObj = new FormData(e.currentTarget);
+      // Get Formspree endpoint from environment variable or use default
+      const formspreeEndpoint = process.env.NEXT_PUBLIC_FORMSPREE_ENDPOINT || 'https://formspree.io/f/YOUR_FORM_ID';
       
-      // Call server action
-      const result = await sendEmail(formDataObj);
-      
-      // Handle response
-      if (result && result.success) {
+      // Validate endpoint is configured
+      if (formspreeEndpoint.includes('YOUR_FORM_ID')) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Contact form not configured. Please set NEXT_PUBLIC_FORMSPREE_ENDPOINT environment variable.' 
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Prepare form data
+      const payload = {
+        name: formData.name.trim(),
+        email: formData.email.trim(),
+        message: formData.message.trim(),
+        _subject: 'New message from jfelicio.github.io',
+      };
+
+      // Client-side validation
+      if (!payload.name || !payload.email || !payload.message) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'All fields are required.' 
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Validate email format
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(payload.email)) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Please enter a valid email address.' 
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Validate field lengths
+      if (payload.name.length < 2 || payload.name.length > 100) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Name must be between 2 and 100 characters.' 
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      if (payload.message.length < 10 || payload.message.length > 2000) {
+        setSubmitStatus({ 
+          type: 'error', 
+          message: 'Message must be between 10 and 2000 characters.' 
+        });
+        setIsSubmitting(false);
+        return;
+      }
+
+      // Send to Formspree
+      const response = await fetch(formspreeEndpoint, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Accept': 'application/json',
+        },
+        body: JSON.stringify(payload),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.ok) {
         setSubmitStatus({ 
           type: 'success', 
-          message: 'Thanks — your message has been sent.' 
+          message: 'Your message has been categorised and sent.' 
         });
         // Reset form
         setFormData({ name: "", email: "", message: "", website: "" });
@@ -50,9 +121,11 @@ export default function Contact() {
           setSubmitStatus({ type: null, message: '' });
         }, 5000);
       } else {
+        // Handle Formspree error response
+        const errorMessage = result.error || 'Something went wrong. Please try again later.';
         setSubmitStatus({ 
           type: 'error', 
-          message: (result && result.error) || 'Something went wrong. Please try again later.' 
+          message: errorMessage 
         });
       }
     } catch (error) {

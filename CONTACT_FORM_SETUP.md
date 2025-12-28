@@ -1,73 +1,49 @@
 # Contact Form Setup
 
-The contact form uses **Resend** for email delivery. This is a simple, reliable solution that requires minimal configuration.
+The contact form uses **Formspree** for email delivery. This is a simple, reliable solution that works with static site exports (GitHub Pages compatible).
 
-## Installation
+## Setup
 
-Install the Resend package:
+1. **Sign up for Formspree**: Go to [https://formspree.io](https://formspree.io) and create a free account.
 
-```bash
-npm install resend
-```
+2. **Create a new form**:
+   - In your Formspree dashboard, click "New Form"
+   - Give it a name (e.g., "Portfolio Contact Form")
+   - Copy the form endpoint URL (format: `https://formspree.io/f/YOUR_FORM_ID`)
 
-## Environment Variables
-
-Create a `.env.local` file in the root directory with the following variables:
-
-```env
-# Resend API Key
-# Get your API key from https://resend.com/api-keys
-RESEND_API_KEY=re_xxxxxxxxxxxxxxxxxxxxxxxxxxxxx
-
-# Contact Form Recipient Email
-# The email address where contact form submissions will be sent
-CONTACT_EMAIL=your-email@example.com
-```
-
-## Resend Setup
-
-1. **Sign up for Resend**: Go to [https://resend.com](https://resend.com) and create an account.
-
-2. **Get your API key**: 
-   - Navigate to API Keys in your Resend dashboard
-   - Create a new API key
-   - Copy the key (starts with `re_`)
-   - Add it to `.env.local` as `RESEND_API_KEY`
-
-3. **Verify your domain** (optional but recommended):
-   - In Resend dashboard, go to Domains
-   - Add and verify your domain
-   - Update the `from` field in `app/actions/sendEmail.ts` to use your verified domain
-   - Example: `from: 'Contact Form <contact@yourdomain.com>'`
-
-4. **Set recipient email**:
-   - Add your personal email to `.env.local` as `CONTACT_EMAIL`
-   - This is where all contact form submissions will be sent
+3. **Configure environment variable**:
+   - Create a `.env.local` file in the root directory (for local development)
+   - Add your Formspree endpoint:
+   ```env
+   NEXT_PUBLIC_FORMSPREE_ENDPOINT=https://formspree.io/f/YOUR_FORM_ID
+   ```
+   - **Note**: For GitHub Pages deployment, add this as a repository secret and reference it in your GitHub Actions workflow
 
 ## How It Works
 
 1. **Client Component** (`app/components/Contact.tsx`):
    - Handles form UI and user interactions
    - Includes a honeypot field for spam protection
+   - Validates inputs client-side
+   - Sends data to Formspree via `fetch` API
    - Shows loading states and success/error messages
 
-2. **Server Action** (`app/actions/sendEmail.ts`):
-   - Validates form inputs server-side
-   - Checks honeypot field (silently fails if filled)
-   - Sends email via Resend API
-   - Returns success/error status
+2. **Formspree**:
+   - Receives form submissions
+   - Validates and processes the data
+   - Sends email notifications to your configured email address
+   - Provides spam protection and rate limiting
 
 3. **Email Format**:
-   - Plain text email
    - Subject: "New message from jfelicio.github.io"
-   - Reply-to: Set to sender's email
-   - Body: Name, Email, Message
+   - Body includes: Name, Email, Message
+   - Reply-to: Set to sender's email (configured in Formspree)
 
 ## Security Features
 
 - **Honeypot field**: Hidden field that bots may fill, but humans won't see
-- **Server-side validation**: All inputs validated on the server
-- **No client-side API keys**: All sensitive data stays server-side
+- **Client-side validation**: All inputs validated before submission
+- **Formspree spam protection**: Built-in spam filtering and rate limiting
 - **Input sanitization**: Basic validation and length checks
 
 ## Testing
@@ -81,29 +57,38 @@ CONTACT_EMAIL=your-email@example.com
 ## Troubleshooting
 
 **Emails not sending:**
-- Check that `RESEND_API_KEY` is set correctly in `.env.local`
-- Verify your Resend account is active
-- Check browser console and server logs for errors
-- Ensure `CONTACT_EMAIL` is set to a valid email address
-
-**Emails going to spam:**
-- Verify your domain in Resend
-- Update the `from` field to use your verified domain
-- Consider adding SPF/DKIM records for your domain
+- Check that `NEXT_PUBLIC_FORMSPREE_ENDPOINT` is set correctly
+- Verify your Formspree account is active
+- Check browser console for errors
+- Ensure the form endpoint URL is correct
 
 **Form not submitting:**
 - Check browser console for client-side errors
-- Verify server action is accessible
+- Verify the Formspree endpoint is accessible
 - Check that all required fields are filled
+- Ensure the endpoint doesn't include `YOUR_FORM_ID` placeholder
 
-## Production Deployment
+**CORS errors:**
+- Formspree handles CORS automatically
+- If you see CORS errors, verify your endpoint URL is correct
 
-For production (e.g., Vercel, Netlify):
+## Production Deployment (GitHub Pages)
 
-1. Add environment variables in your hosting platform's dashboard
-2. Set `RESEND_API_KEY` and `CONTACT_EMAIL`
-3. Redeploy your application
-4. Test the contact form in production
+For GitHub Pages deployment:
 
-**Note**: The default `from` address (`onboarding@resend.dev`) works for testing but should be updated to your verified domain for production.
+1. **Add environment variable to GitHub Secrets**:
+   - Go to your repository → Settings → Secrets and variables → Actions
+   - Add a new secret: `NEXT_PUBLIC_FORMSPREE_ENDPOINT`
+   - Value: Your Formspree endpoint URL
 
+2. **Update GitHub Actions workflow** (if using one):
+   ```yaml
+   env:
+     NEXT_PUBLIC_FORMSPREE_ENDPOINT: ${{ secrets.NEXT_PUBLIC_FORMSPREE_ENDPOINT }}
+   ```
+
+3. **Build and deploy**:
+   - The form will work in the static export
+   - No server-side code required
+
+**Note**: Since this is a static site, the environment variable must be prefixed with `NEXT_PUBLIC_` to be available in the browser.
