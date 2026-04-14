@@ -1,0 +1,7 @@
+version: 2
+updates:
+  - package-ecosystem: "npm" # Specifically for projects using package.json / package-lock.json
+    directory: "/" # Assuming your manifest is in the root directory
+    schedule:
+      interval: "weekly" # Daily is recommended for security-critical projects
+    open-pull-requests-limit: 10
