@@ -4,7 +4,8 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // This is the crucial fix for the "Export doesn't exist" error
+  transpilePackages: ['lucide-react'],
 };
 
 export default nextConfig;
-
