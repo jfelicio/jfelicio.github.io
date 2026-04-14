@@ -1,6 +1,7 @@
 "use client";
 
-import { MapPin, Linkedin } from "lucide-react";
+import MapPin from "lucide-react/dist/esm/icons/map-pin";
+import Linkedin from "lucide-react/dist/esm/icons/linkedin";
 import Link from "next/link";
 
 export default function Footer() {
