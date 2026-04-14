@@ -1,6 +1,6 @@
 "use client";
 
-import { MapPin, LinkedIn } from "lucide-react";
+import { MapPin, LinkedinIcon } from "lucide-react";
 import Link from "next/link";
 
 export default function Footer() {
