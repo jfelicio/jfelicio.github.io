@@ -11,7 +11,7 @@
   "dependencies": {
     "autoprefixer": "^10.5.0",
     "framer-motion": "^12.38.0",
-    "lucide-react": "^1.8.0",
+    "lucide-react": "^1.14.0",
     "next": "latest",
     "react": "rc",
     "react-dom": "rc"
